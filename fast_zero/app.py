@@ -1,8 +1,9 @@
 from http import HTTPStatus
+import pytest
 
 from fastapi import FastAPI
 
-from fast_zero.schemas import Message, UserSchema, UserPublic
+from fast_zero.schemas import Message, UserDB, UserPublic, UserSchema
 
 app = FastAPI()
 
@@ -15,6 +16,13 @@ def read_root():
 
 @app.post('/users/', response_model=UserPublic)
 def create_user(user: UserSchema):
-    return user
+    user_with_id = UserDB(
+        id=len(database) + 1,
+        **user.model_dump()
+    )
+
+    database.append(user_with_id)
+
+    return user_with_id
 
 
