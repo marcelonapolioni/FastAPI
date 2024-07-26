@@ -1,5 +1,4 @@
 from http import HTTPStatus
-import pytest
 
 from fastapi import FastAPI
 
@@ -10,15 +9,19 @@ app = FastAPI()
 database = []
 
 
-@app.get("/", status_code=HTTPStatus.OK, response_model=Message)
+@app.get('/', status_code=HTTPStatus.OK, response_model=Message)
 def read_root():
-    return {"message": "Olá Mundo!"}
+    return {'message': 'Olá Mundo!'}
 
 
-@app.post("/users/", response_model=UserPublic)
+@app.post('/users/', response_model=UserPublic)
 def create_user(user: UserSchema):
     user_with_id = UserDB(id=len(database) + 1, **user.model_dump())
 
     database.append(user_with_id)
 
     return user_with_id
+
+@app.get('/users/')
+def read_users():
+    return {'users': database}
